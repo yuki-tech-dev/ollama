@@ -1,0 +1,30 @@
+# --- Windows ---
+Thumbs.db
+Desktop.ini
+
+# --- VSCode ---
+.vscode/
+.history/
+
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+.venv/
+env/
+venv/
+
+# --- Logs ---
+*.log
+
+# --- Node (optional) ---
+node_modules/
+
+# --- Docker ---
+*.pid
+
+# --- Misc ---
+.DS_Store
