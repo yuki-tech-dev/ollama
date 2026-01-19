@@ -29,3 +29,18 @@ node_modules/
 
 # --- Misc ---
 .DS_Store
+
+# ChromaDB の保存データ（バイナリ & SQLite）
+chroma_db/
+*.sqlite3
+*.bin
+
+# --- ROS2 / colcon build artifacts ---
+build/
+install/
+log/
+test_results/
+
+
+# その他一時ファイル
+*.tmp
