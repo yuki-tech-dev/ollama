@@ -13,7 +13,8 @@ chroma_client = chromadb.PersistentClient(path=DB_DIR)
 if "collection" not in st.session_state:
     #chroma_clientを用いてテーブルを作るget or createなのであったらとる。なかったら作る
     st.session_state.collection = chroma_client.get_or_create_collection(
-        name="local_docs"
+        name="local_docs",
+        metadata={"hnsw:space": "cosine"} #緒方追加
     )
 
 
@@ -35,8 +36,8 @@ def load_word_document(file):
 
 # テキスト分割関数(チャンク化)
 def split_text(text):
-    chunk_size = 200
-    overlap = 50
+    chunk_size = 600
+    overlap = 120
     chunks = []
     start = 0
     while start < len(text):
@@ -137,8 +138,22 @@ if prompt:
         query_embeddings=[query_embed],
         n_results=2
     )
-    
+
+    filtered = [
+    (doc, dist)
+    for doc, dist in zip(results["documents"][0], results["distances"][0])
+    if dist < 0.3
+    ]
+
+
+    print("distancesの中身:",results["distances"])
+
     print(results["documents"])
+    print(results["documents"][0])
+    print(filtered)
+
+
+
 
     # {
     #     "ids":
@@ -147,8 +162,10 @@ if prompt:
     # ↓下の関連ドキュメントのところが、関連していない内容も引っ張ってきているみたいなので、
     # 改善方法を調べること。
     # }
-    if results["documents"][0]:
-        context_text = "\n".join(results["documents"][0])
+    # if results["documents"][0]:# 最初はresults["documents"]であったが修正。
+    if filtered:# 最初はresults["documents"]であったが修正。
+        #context_text = "\n".join(results["documents"][0])
+        context_text = "\n".join([doc for doc, dist in filtered])
         rag_prompt = f"""
         以下は関連ドキュメントの抜粋です。
         {context_text}
